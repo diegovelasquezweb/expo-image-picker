@@ -63,28 +63,27 @@ export default function App() {
       aspect: [4, 3],
       quality: 1,
     });
-  
+
     if (!result.cancelled) {
       const selectedImage = result.assets[0];
       setImage(selectedImage.uri);
       setModalVisible(false);
     }
   };
-  
+
   const takePhoto = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-  
+
     if (!result.cancelled) {
       const takenPhoto = result.assets[0];
       setImage(takenPhoto.uri);
       setModalVisible(false);
     }
   };
-  
 
   const handleImagePress = () => {
     setModalVisible(true);
