@@ -30,7 +30,7 @@ export default function App() {
 
       if (statusCamera !== "granted" || statusLibrary !== "granted") {
         alert(
-          "Sorry, we need camera and media library permissions to make this work!"
+          "Sorry, we need camera and media library permissions!"
         );
       }
     })();
@@ -54,7 +54,20 @@ export default function App() {
         }
       );
     });
+    checkSavedData();
   }, []);
+
+  const checkSavedData = () => {
+    db.transaction((tx) => {
+      tx.executeSql('SELECT * FROM data ORDER BY id DESC LIMIT 1;', [], (_, { rows: { _array } }) => {
+        if (_array.length > 0) {
+          setQuote(_array[0].quote);
+          setImage(_array[0].image);
+          setIsSaved(true);
+        }
+      });
+    });
+  };
 
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
