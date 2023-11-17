@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Button,
   Image,
-  StyleSheet,
   TextInput,
   View,
   TouchableOpacity,
@@ -12,6 +11,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import * as SQLite from "expo-sqlite";
+import { styles } from "./styles/styles";
 
 const db = SQLite.openDatabase("App.db");
 
@@ -118,21 +118,22 @@ export default function App() {
     }
   };
 
-  const clearData = () => {
-    db.transaction((tx) => {
-      tx.executeSql("DELETE FROM data;");
-    });
+  // const clearData = () => {
+  //   db.transaction((tx) => {
+  //     tx.executeSql("DELETE FROM data;");
+  //   });
 
-    setQuote("");
-    setImage("https://via.placeholder.com/150");
-    setIsSaved(false);
-  };
+  //   setQuote("");
+  //   setImage("https://via.placeholder.com/150");
+  //   setIsSaved(false);
+  // };
 
   return (
     <View style={styles.container}>
-      <Text>My Favorite Moment!!</Text>
-      <Text>LAB7 - DIEGO VELASQUEZ</Text>
-      {isSaved && <Text> Data Saved!!</Text>}
+      <Text style={styles.title}>My Favorite Moment!!</Text>
+      <Text style={styles.subtitle}>LAB7 - DIEGO VELASQUEZ</Text>
+      {isSaved && <Text style={styles.dataSavedText}>Data Saved!!</Text>}
+
       <TouchableOpacity onPress={handleImagePress}>
         <Image style={styles.image} source={{ uri: image }} />
       </TouchableOpacity>
@@ -145,11 +146,13 @@ export default function App() {
           placeholder="Enter a quote"
         />
       ) : (
-        <Text>{quote}</Text>
+        <Text style={styles.quoteText}>{quote}</Text>
       )}
 
-      {!isSaved && <Button title="Save Data" onPress={saveData} />}
-      <Button title="Clear Data" onPress={clearData} />
+      {!isSaved && (
+        <Button style={styles.button} title="Save Data" onPress={saveData} />
+      )}
+      {/* <Button title="Clear Data" onPress={clearData} /> */}
 
       <Modal
         animationType="slide"
@@ -159,48 +162,18 @@ export default function App() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Button title="Choose from Gallery" onPress={selectImage} />
-            <Button title="Take a Photo" onPress={takePhoto} />
-            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+            <TouchableOpacity onPress={selectImage}>
+              <Text style={styles.linkText}>Choose from Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={takePhoto}>
+              <Text style={styles.linkText}>Take a Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text style={styles.linkText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  image: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "black",
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    marginBottom: 20,
-    width: "80%",
-    textAlign: "center",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-});
